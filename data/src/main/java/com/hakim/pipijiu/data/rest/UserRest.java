@@ -1,12 +1,12 @@
 package com.hakim.pipijiu.data.rest;
 
 import com.hakim.pipijiu.data.entities.UserEntity;
-import com.hakim.pipijiu.data.api.UserReqBody;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -40,7 +40,7 @@ public interface UserRest {
      * @return 返回用户实体
      */
     @POST("usersByMobilePhone")
-    Call<UserEntity> signUp(@Body UserReqBody body);
+    Call<UserEntity> signUp(@Body RequestBody body);
 
     /**
      * 用户注册之验证手机号码
@@ -97,7 +97,7 @@ public interface UserRest {
      * @return
      */
     @PUT("resetPasswordBySmsCode/{smsCode}")
-    Call<ResponseBody> verifySmsCodeToResetPassword(@Path("smsCode") String smsCode, @Query("password") String newPassword);
+    Call<ResponseBody> resetPassword(@Path("smsCode") String smsCode, @Query("password") String newPassword);
 
     /**
      * 更新用户信息
@@ -107,5 +107,5 @@ public interface UserRest {
      * @return 返回OKHttp响应数据
      */
     @PUT("users/{objectId}")
-    Call<ResponseBody> updateUser(@Path("objectId") String objectId, @Body RequestBody body);
+    Call<ResponseBody> updateUser(@Header("X-LC-Session") String token, @Path("objectId") String objectId, @Body RequestBody body);
 }

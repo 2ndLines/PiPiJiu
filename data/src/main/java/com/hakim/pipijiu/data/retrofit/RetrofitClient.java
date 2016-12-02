@@ -78,7 +78,7 @@ public class RetrofitClient implements RetrofitApi {
                         Response<T> r = call.execute();
                         if (r.errorBody() != null) {
                             String errStr = r.errorBody().string();
-                            LeanCloudError error = new Gson().fromJson(errStr, LeanCloudError.class);
+                            LeanCloudError error = GsonUtils.fromJson(errStr, LeanCloudError.class);
                             subscriber.onError(new LeanCloudException(error.getCode(), error.getError()));
                         } else if (r.isSuccessful()) {
                             T tmp = r.body();
@@ -89,6 +89,33 @@ public class RetrofitClient implements RetrofitApi {
                                 r1 = (R) tmp;
                             }
                             subscriber.onNext(r1);
+                            subscriber.onCompleted();
+                        } else {
+                            subscriber.onError(new LeanCloudException(r.code(), r.message()));
+                        }
+                    } catch (IOException e) {
+                        subscriber.onError(e);
+                    }
+                }
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public <T> Observable<T> doRequest(final Call<T> call) {
+        if (call == null) throw new NullPointerException("Call object must not be null");
+        return Observable.create(new Observable.OnSubscribe<T>() {
+            @Override
+            public void call(Subscriber<? super T> subscriber) {
+                if (!subscriber.isUnsubscribed()) {
+                    try {
+                        Response<T> r = call.execute();
+                        if (r.errorBody() != null) {
+                            String errStr = r.errorBody().string();
+                            LeanCloudError error = GsonUtils.fromJson(errStr, LeanCloudError.class);
+                            subscriber.onError(new LeanCloudException(error.getCode(), error.getError()));
+                        } else if (r.isSuccessful()) {
+                            subscriber.onNext(r.body());
                             subscriber.onCompleted();
                         } else {
                             subscriber.onError(new LeanCloudException(r.code(), r.message()));

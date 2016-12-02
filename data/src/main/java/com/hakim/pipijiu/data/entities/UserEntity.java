@@ -1,5 +1,7 @@
 package com.hakim.pipijiu.data.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * OkLine(HangZhou) co., Ltd. <br/>
  * Author: Shi Haijun <br/>
@@ -11,9 +13,11 @@ public class UserEntity {
     /**
      * LeanCloud objectId
      */
-    private String objectId;
+    @SerializedName("objectId")
+    private String uid;
 
-    private String sessionToken;
+    @SerializedName("sessionToken")
+    private String token;
     /**
      * 用户名
      */
@@ -27,12 +31,12 @@ public class UserEntity {
      */
     private String createdAt;
 
-    public String getObjectId() {
-        return objectId;
+    public String getUid() {
+        return uid;
     }
 
-    public String getSessionToken() {
-        return sessionToken;
+    public String getToken() {
+        return token;
     }
 
     public String getUsername() {
@@ -50,8 +54,8 @@ public class UserEntity {
     @Override
     public String toString() {
         return "UserEntity{" +
-                "objectId='" + objectId + '\'' +
-                ", sessionToken='" + sessionToken + '\'' +
+                "uid='" + uid + '\'' +
+                ", token='" + token + '\'' +
                 ", username='" + username + '\'' +
                 ", phone='" + phone + '\'' +
                 ", createdAt='" + createdAt + '\'' +

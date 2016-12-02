@@ -34,20 +34,33 @@ public interface UserApi {
     Observable<UserEntity> signUp(String phoneNumber, String smsCode, String password);
 
     /**
+     * 请求验证码
+     *
      * @param phoneNumber
      * @param opType
      * @return
      */
     Observable<Boolean> requestSmsCode(String phoneNumber, String opType);
 
+    /**
+     * 验证验证码
+     *
+     * @param phoneNumber
+     * @param smsCode
+     * @return
+     */
     Observable<Boolean> verifySmsCode(String phoneNumber, String smsCode);
 
     /**
+     * 请求用于重置密码的验证码
+     *
      * @return
      */
-    Observable<Boolean> requestSmsCodeToResetPassword();
+    Observable<Boolean> requestSmsCodeToResetPassword(String phoneNumber);
 
     /**
+     * 重置密码
+     *
      * @param smsCode     验证码
      * @param newPassword 新密码
      * @return
@@ -60,6 +73,6 @@ public interface UserApi {
      * @param fieldMap 更新字段与值的map
      * @return
      */
-    Observable<Boolean> updateUser(Map<String, String> fieldMap);
+    Observable<UserEntity> updateUser(Map<String, String> fieldMap);
 
 }

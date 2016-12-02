@@ -33,4 +33,7 @@ public interface RetrofitApi {
      * @return
      */
     <T, R> Observable<R> doRequest(Call<T> call, Func1<T, R> mapper);
+
+    <T> Observable<T> doRequest(Call<T> call);
+
 }

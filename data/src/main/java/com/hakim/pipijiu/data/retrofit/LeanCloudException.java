@@ -10,6 +10,10 @@ package com.hakim.pipijiu.data.retrofit;
 public class LeanCloudException extends RuntimeException {
     private int code;
 
+    /**
+     * @param code    error code
+     * @param message error description
+     */
     public LeanCloudException(int code, String message) {
         this(message);
         this.code = code;
@@ -27,6 +31,9 @@ public class LeanCloudException extends RuntimeException {
         super(throwable);
     }
 
+    /**
+     * LeanCloud error code
+     */
     public int getCode() {
         return code;
     }
