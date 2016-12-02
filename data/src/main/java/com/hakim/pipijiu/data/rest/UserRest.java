@@ -1,6 +1,7 @@
 package com.hakim.pipijiu.data.rest;
 
 import com.hakim.pipijiu.data.entities.UserEntity;
+import com.hakim.pipijiu.data.api.UserReqBody;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;

@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.data.rest;
+package com.hakim.pipijiu.data.retrofit;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

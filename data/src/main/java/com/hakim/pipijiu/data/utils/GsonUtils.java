@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.data;
+package com.hakim.pipijiu.data.utils;
 
 import com.google.gson.Gson;
 

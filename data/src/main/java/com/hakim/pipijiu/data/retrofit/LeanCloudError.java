@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.data.rest;
+package com.hakim.pipijiu.data.retrofit;
 
 /**
  * OkLine(HangZhou) co., Ltd. <br/>
@@ -7,7 +7,7 @@ package com.hakim.pipijiu.data.rest;
  * Date  : 2016/12/1 12:05 <br/>
  * Desc  :
  */
-public class LeanCloudError {
+class LeanCloudError {
     private int code;
     private String error;
 

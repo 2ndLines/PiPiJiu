@@ -1,27 +1,18 @@
 package com.hakim.pipijiu.data.api;
 
-import com.google.gson.Gson;
-import com.hakim.pipijiu.data.GsonUtils;
 import com.hakim.pipijiu.data.entities.UserEntity;
-import com.hakim.pipijiu.data.rest.ApiFactory;
-import com.hakim.pipijiu.data.rest.LeanCloudError;
-import com.hakim.pipijiu.data.rest.RestException;
-import com.hakim.pipijiu.data.rest.UserReqBody;
+import com.hakim.pipijiu.data.retrofit.RetrofitApi;
+import com.hakim.pipijiu.data.retrofit.RetrofitClient;
 import com.hakim.pipijiu.data.rest.UserRest;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * OkLine(HangZhou) co., Ltd. <br/>
@@ -30,7 +21,7 @@ import rx.schedulers.Schedulers;
  * Date  : 2016/11/29 17:00 <br/>
  * Desc  :
  */
-public class UserApiImpl implements UserApi {
+public class UserApiImpl implements UserApi, RetrofitApi {
     private static final String TAG = "UserApi";
     private final UserRest userRest;
     private static final Func1<ResponseBody, Boolean> BOOLEAN_MAPPER = new Func1<ResponseBody, Boolean>() {
@@ -41,7 +32,7 @@ public class UserApiImpl implements UserApi {
     };
 
     public UserApiImpl() {
-        userRest = ApiFactory.INSTANCE.getUserRest();
+        userRest = RetrofitClient.getInstance().create(UserRest.class);
     }
 
 
@@ -57,56 +48,11 @@ public class UserApiImpl implements UserApi {
                 .password(password)
                 .build();
 
-        Call<UserEntity> call = userRest.createUser(buildRequestBody(body));
+
+        Call<UserEntity> call = userRest.createUser(buildBody(body));
         return doRequest(call, null);
     }
 
-    private static <T> RequestBody buildRequestBody(T t) {
-        return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), GsonUtils.toJson(t));
-    }
-
-    /**
-     * 执行LeanCloud的REST请求。<br/>
-     * 如果参数{@code mapper}为null，则T类型与R类型必须为同一类型，否则将出现类型转换异常。
-     *
-     * @param call   Call实例
-     * @param mapper 将T类型转换为R的类型
-     * @param <T>    Call的返回类型
-     * @param <R>    期望的结果类型
-     * @return
-     */
-    private <T, R> Observable<R> doRequest(final Call<T> call, final Func1<T, R> mapper) {
-        if (call == null) throw new NullPointerException("Call object must not be null");
-        return Observable.create(new Observable.OnSubscribe<R>() {
-            @Override
-            public void call(Subscriber<? super R> subscriber) {
-                if (!subscriber.isUnsubscribed()) {
-                    try {
-                        Response<T> r = call.execute();
-                        if (r.errorBody() != null) {
-                            String errStr = r.errorBody().string();
-                            LeanCloudError error = new Gson().fromJson(errStr, LeanCloudError.class);
-                            subscriber.onError(new RestException(error.getCode(), error.getError()));
-                        } else if (r.isSuccessful()) {
-                            T tmp = r.body();
-                            R r1 = null;
-                            if (mapper != null) {
-                                r1 = mapper.call(tmp);
-                            } else {
-                                r1 = (R) tmp;
-                            }
-                            subscriber.onNext(r1);
-                            subscriber.onCompleted();
-                        } else {
-                            subscriber.onError(new RestException(r.code(), r.message()));
-                        }
-                    } catch (IOException e) {
-                        subscriber.onError(e);
-                    }
-                }
-            }
-        }).subscribeOn(Schedulers.io());
-    }
 
     @Override
     public Observable<UserEntity> signUp(String phoneNumber, String smsCode, String password) {
@@ -123,7 +69,8 @@ public class UserApiImpl implements UserApi {
         UserReqBody body = UserReqBody.newBuilder()
                 .mobilePhoneNumber(phoneNumber)
                 .op(opType).build();
-        Call<ResponseBody> call = userRest.requestSmsCode(buildRequestBody(body));
+        Call<ResponseBody> call = userRest.requestSmsCode(buildBody(body));
+
         return doRequest(call, BOOLEAN_MAPPER);
     }
 
@@ -149,11 +96,13 @@ public class UserApiImpl implements UserApi {
         return null;
     }
 
-    /**
-     * @param <R> REST返回的结果
-     */
-    private interface RestCall<R> {
+    @Override
+    public <T> RequestBody buildBody(T t) {
+        return RetrofitClient.getInstance().buildBody(t);
+    }
 
-        Call<R> call();
+    @Override
+    public <T, R> Observable<R> doRequest(Call<T> call, Func1<T, R> mapper) {
+        return RetrofitClient.getInstance().doRequest(call, mapper);
     }
 }

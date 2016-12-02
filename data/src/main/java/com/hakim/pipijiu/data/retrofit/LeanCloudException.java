@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.data.rest;
+package com.hakim.pipijiu.data.retrofit;
 
 /**
  * OkLine(HangZhou) co., Ltd. <br/>
@@ -7,23 +7,23 @@ package com.hakim.pipijiu.data.rest;
  * Date  : 2016/12/1 10:27 <br/>
  * Desc  :
  */
-public class RestException extends RuntimeException {
+public class LeanCloudException extends RuntimeException {
     private int code;
 
-    public RestException(int code, String message) {
+    public LeanCloudException(int code, String message) {
         this(message);
         this.code = code;
     }
 
-    public RestException(String detailMessage) {
+    public LeanCloudException(String detailMessage) {
         super(detailMessage);
     }
 
-    public RestException(String detailMessage, Throwable throwable) {
+    public LeanCloudException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
     }
 
-    public RestException(Throwable throwable) {
+    public LeanCloudException(Throwable throwable) {
         super(throwable);
     }
 

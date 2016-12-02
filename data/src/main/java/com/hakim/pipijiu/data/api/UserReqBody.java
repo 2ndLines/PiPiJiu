@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.data.rest;
+package com.hakim.pipijiu.data.api;
 
 import android.support.annotation.Nullable;
 
