@@ -2,12 +2,10 @@ package com.hakim.pipijiu.data.api;
 
 import com.hakim.pipijiu.data.entities.UserEntity;
 import com.hakim.pipijiu.data.rest.UserRest;
+import com.hakim.pipijiu.data.rest.UserRestBody;
 import com.hakim.pipijiu.data.retrofit.LeanCloudCache;
 import com.hakim.pipijiu.data.retrofit.RetrofitApi;
 import com.hakim.pipijiu.data.retrofit.RetrofitClient;
-
-import java.util.Locale;
-import java.util.Map;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -49,29 +47,24 @@ public class UserApiImpl implements UserApi, RetrofitApi {
     }
 
     public Observable<UserEntity> createUser(String username, String password) {
-        final UserReqBody body = UserReqBody.newBuilder()
+        UserRestBody body = UserRestBody.newBuilder()
                 .username(username)
                 .password(password)
                 .build();
-        Call<UserEntity> call = userRest.createUser(buildBody(body));
+
+        Call<UserEntity> call = userRest.createUser(body);
         return doRequest(call);
     }
 
 
     @Override
     public Observable<UserEntity> signUp(String phoneNumber, String smsCode, String password) {
-        UserReqBody body = UserReqBody.newBuilder()
+        UserRestBody body = UserRestBody.newBuilder()
                 .mobilePhoneNumber(phoneNumber)
                 .smsCode(smsCode)
                 .password(password)
                 .build();
-        return doRequest(userRest.signUp(buildBody(body)))
-                .doOnNext(new Action1<UserEntity>() {
-                    @Override
-                    public void call(UserEntity entity) {
-                        cacheTokenAndUid(entity);
-                    }
-                });
+        return doRequest(userRest.signUp(body));
     }
 
     private void cacheTokenAndUid(UserEntity entity) {
@@ -82,35 +75,40 @@ public class UserApiImpl implements UserApi, RetrofitApi {
 
     @Override
     public Observable<Boolean> requestSmsCode(String phoneNumber, String opType) {
-        UserReqBody body = UserReqBody.newBuilder()
+        UserRestBody body = UserRestBody.newBuilder()
                 .mobilePhoneNumber(phoneNumber)
-                .op(opType).build();
-        return doRequest(userRest.requestSmsCode(buildBody(body)), BOOLEAN_MAPPER);
+                .op(opType)
+                .build();
+        return doRequest(userRest.requestSmsCode(body), BOOLEAN_MAPPER);
     }
 
     @Override
     public Observable<Boolean> verifySmsCode(String phoneNumber, String smsCode) {
-        String str = String.format(Locale.getDefault(), "%s?mobilePhoneNumber=%s", smsCode, phoneNumber);
-        System.out.println(str);
-        return doRequest(userRest.verifySmsCode(str), BOOLEAN_MAPPER);
+        return doRequest(userRest.verifySmsCode(smsCode, phoneNumber), BOOLEAN_MAPPER);
     }
 
     @Override
     public Observable<Boolean> requestSmsCodeToResetPassword(String phoneNumber) {
-        return doRequest(userRest.requestSmsCodeToResetPassword(phoneNumber), BOOLEAN_MAPPER);
+        UserRestBody body = UserRestBody.newBuilder()
+                .mobilePhoneNumber(phoneNumber)
+                .build();
+        return doRequest(userRest.requestSmsCodeToResetPassword(body), BOOLEAN_MAPPER);
     }
 
     @Override
     public Observable<Boolean> resetPassword(String smsCode, String newPassword) {
-        return doRequest(userRest.resetPassword(smsCode, newPassword), BOOLEAN_MAPPER);
+        UserRestBody body = UserRestBody.newBuilder()
+                .password(newPassword)
+                .build();
+        return doRequest(userRest.resetPassword(smsCode, body), BOOLEAN_MAPPER);
     }
 
     @Override
-    public Observable<UserEntity> updateUser(Map<String, String> fieldMap) {
+    public Observable<UserEntity> updateUser(UserEntity entity) {
         LeanCloudCache cache = LeanCloudCache.getInstance();
         String token = cache.getToken();
         String uid = cache.getObjectId();
-        return doRequest(userRest.updateUser(token, uid, buildBody(fieldMap)), BOOLEAN_MAPPER)
+        return doRequest(userRest.updateUser(token, uid, entity), BOOLEAN_MAPPER)
                 .map(new Func1<Boolean, UserEntity>() {
                     @Override
                     public UserEntity call(Boolean updated) {

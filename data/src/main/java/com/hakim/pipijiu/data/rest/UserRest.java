@@ -2,10 +2,10 @@ package com.hakim.pipijiu.data.rest;
 
 import com.hakim.pipijiu.data.entities.UserEntity;
 
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -27,11 +27,11 @@ public interface UserRest {
      * @param password 密码
      * @return 返回用户实体
      */
-    @POST("login")
-    Call<UserEntity> login(@Query("username") String username, @Query("password") String password);
+    @GET("login")
+    Call<UserEntity> login(@Query("mobilePhoneNumber") String username, @Query("password") String password);
 
     @POST("users")
-    Call<UserEntity> createUser(@Body RequestBody body);
+    Call<UserEntity> createUser(@Body UserRestBody body);
 
     /**
      * 用户注册。使用手机号码+密码+验证码的形式
@@ -40,7 +40,7 @@ public interface UserRest {
      * @return 返回用户实体
      */
     @POST("usersByMobilePhone")
-    Call<UserEntity> signUp(@Body RequestBody body);
+    Call<UserEntity> signUp(@Body UserRestBody body);
 
     /**
      * 用户注册之验证手机号码
@@ -54,50 +54,50 @@ public interface UserRest {
     /**
      * 请求短信验证码
      *
-     * @param body
+     * @param phoneNumberBody
      * @return
-     * @see #verifySmsCode(String)
+     * @see #verifySmsCode(String, String)
      */
     @POST("requestSmsCode")
-    Call<ResponseBody> requestSmsCode(@Body RequestBody body);
+    Call<ResponseBody> requestSmsCode(@Body UserRestBody phoneNumberBody);
 
     /**
      * 验证短信验证码
      *
-     * @param data data格式：6位数字验证码?mobilePhoneNumber=186xxxxxxxx
+     * @param smsCode
      * @return
-     * @see #requestSmsCode(RequestBody)
+     * @see #requestSmsCode(UserRestBody)
      */
-    @POST("verifySmsCode/{data}")
-    Call<ResponseBody> verifySmsCode(@Path("data") String data);
+    @POST("verifySmsCode/{smsCode}")
+    Call<ResponseBody> verifySmsCode(@Path("smsCode") String smsCode, @Query("mobilePhoneNumber") String phoneNumber);
 
     /**
      * 再次请求验证
      *
-     * @param phoneNumber 手机号码
+     * @param phoneNumberBody
      * @return
      */
     @POST("requestMobilePhoneVerify")
-    Call<ResponseBody> requestSmsCodeAgain(@Query("mobilePhoneNumber") String phoneNumber);
+    Call<ResponseBody> requestSmsCodeAgain(@Body UserRestBody phoneNumberBody);
 
     /**
      * 重置密码之获取验证码
      *
-     * @param phoneNumber 手机号码
+     * @param phoneNumberBody
      * @return 返回OKHttp响应数据
      */
     @POST("resetPasswordBySmsCode")
-    Call<ResponseBody> requestSmsCodeToResetPassword(@Query("mobilePhoneNumber") String phoneNumber);
+    Call<ResponseBody> requestSmsCodeToResetPassword(@Body UserRestBody phoneNumberBody);
 
     /**
      * 重置密码之验证验证码
      *
      * @param smsCode     6位短信验证码
-     * @param newPassword 新密码
+     * @param newPasswordBody
      * @return
      */
     @PUT("resetPasswordBySmsCode/{smsCode}")
-    Call<ResponseBody> resetPassword(@Path("smsCode") String smsCode, @Query("password") String newPassword);
+    Call<ResponseBody> resetPassword(@Path("smsCode") String smsCode, @Body UserRestBody newPasswordBody);
 
     /**
      * 更新用户信息
@@ -107,5 +107,5 @@ public interface UserRest {
      * @return 返回OKHttp响应数据
      */
     @PUT("users/{objectId}")
-    Call<ResponseBody> updateUser(@Header("X-LC-Session") String token, @Path("objectId") String objectId, @Body RequestBody body);
+    Call<ResponseBody> updateUser(@Header("X-LC-Session") String token, @Path("objectId") String objectId, @Body UserEntity body);
 }

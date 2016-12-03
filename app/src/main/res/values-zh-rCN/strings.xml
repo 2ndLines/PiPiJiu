@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="request_sms_code">新建用户</string>
+    <string name="enter_sms_code">输入验证码</string>
+    <string name="verify_sms_code">验证验证码</string>
 </resources>

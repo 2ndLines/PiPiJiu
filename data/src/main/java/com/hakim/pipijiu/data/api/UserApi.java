@@ -2,8 +2,6 @@ package com.hakim.pipijiu.data.api;
 
 import com.hakim.pipijiu.data.entities.UserEntity;
 
-import java.util.Map;
-
 import rx.Observable;
 
 
@@ -70,9 +68,9 @@ public interface UserApi {
     /**
      * 更新用户信息
      *
-     * @param fieldMap 更新字段与值的map
+     * @param entity
      * @return
      */
-    Observable<UserEntity> updateUser(Map<String, String> fieldMap);
+    Observable<UserEntity> updateUser(UserEntity entity);
 
 }
