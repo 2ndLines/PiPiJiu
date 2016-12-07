@@ -23,6 +23,8 @@ public interface RetrofitApi {
      */
     <T> RequestBody buildBody(T t);
 
+    <T> Observable<Boolean> doRequestForBoolean(Call<T> call);
+
     /**
      * 执行Retrofit请求
      *
@@ -34,6 +36,11 @@ public interface RetrofitApi {
      */
     <T, R> Observable<R> doRequest(Call<T> call, Func1<T, R> mapper);
 
+    /**
+     * @param call
+     * @param <T>
+     * @return
+     */
     <T> Observable<T> doRequest(Call<T> call);
 
 }

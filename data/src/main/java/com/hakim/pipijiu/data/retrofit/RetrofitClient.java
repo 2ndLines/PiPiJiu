@@ -57,6 +57,15 @@ public class RetrofitClient implements RetrofitApi {
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), GsonUtils.toJson(t));
     }
 
+    public <T> Observable<Boolean> doRequestForBoolean(Call<T> call) {
+        return doRequest(call, new Func1<T, Boolean>() {
+            @Override
+            public Boolean call(T t) {
+                return t != null;
+            }
+        });
+    }
+
     /**
      * 执行LeanCloud的REST请求。<br/>
      * 如果参数{@code mapper}为null，则T类型与R类型必须为同一类型，否则将出现类型转换异常。

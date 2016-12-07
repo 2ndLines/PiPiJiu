@@ -22,9 +22,10 @@ import rx.functions.Func1;
  * Date  : 2016/11/29 17:00 <br/>
  * Desc  :
  */
-public class UserApiImpl implements UserApi, RetrofitApi {
+public class UserApiImpl implements UserApi {
     private static final String TAG = "UserApi";
     private final UserRest userRest;
+    private RetrofitClient client;
     private static final Func1<ResponseBody, Boolean> BOOLEAN_MAPPER = new Func1<ResponseBody, Boolean>() {
         @Override
         public Boolean call(ResponseBody body) {
@@ -33,12 +34,14 @@ public class UserApiImpl implements UserApi, RetrofitApi {
     };
 
     public UserApiImpl() {
-        userRest = RetrofitClient.getInstance().create(UserRest.class);
+        client = RetrofitClient.getInstance();
+        userRest = client.create(UserRest.class);
+
     }
 
     @Override
     public Observable<User> login(String phoneNumber, String password) {
-        return doRequest(userRest.login(phoneNumber, password))
+        return client.doRequest(userRest.login(phoneNumber, password))
                 .doOnNext(new Action1<User>() {
                     @Override
                     public void call(User entity) {
@@ -54,7 +57,7 @@ public class UserApiImpl implements UserApi, RetrofitApi {
                 .build();
 
         Call<User> call = userRest.createUser(body);
-        return doRequest(call);
+        return client.doRequest(call);
     }
 
 
@@ -65,7 +68,7 @@ public class UserApiImpl implements UserApi, RetrofitApi {
                 .smsCode(smsCode)
                 .password(password)
                 .build();
-        return doRequest(userRest.signUp(body)).map(new Func1<UpdatedResult, Boolean>() {
+        return client.doRequest(userRest.signUp(body)).map(new Func1<UpdatedResult, Boolean>() {
             @Override
             public Boolean call(UpdatedResult result) {
                 if (result != null) {
@@ -79,7 +82,7 @@ public class UserApiImpl implements UserApi, RetrofitApi {
 
     @Override
     public Observable<User> getUser(String uid) {
-        return doRequest(userRest.getUser(uid));
+        return client.doRequest(userRest.getUser(uid));
     }
 
     private void cacheTokenAndUid(String token, String uid) {
@@ -94,12 +97,12 @@ public class UserApiImpl implements UserApi, RetrofitApi {
                 .mobilePhoneNumber(phoneNumber)
                 .op(opType)
                 .build();
-        return doRequest(userRest.requestSmsCode(body), BOOLEAN_MAPPER);
+        return client.doRequestForBoolean(userRest.requestSmsCode(body));
     }
 
     @Override
     public Observable<Boolean> verifySmsCode(String phoneNumber, String smsCode) {
-        return doRequest(userRest.verifySmsCode(smsCode, phoneNumber), BOOLEAN_MAPPER);
+        return client.doRequestForBoolean(userRest.verifySmsCode(smsCode, phoneNumber));
     }
 
     @Override
@@ -107,7 +110,7 @@ public class UserApiImpl implements UserApi, RetrofitApi {
         UserRestBody body = UserRestBody.newBuilder()
                 .mobilePhoneNumber(phoneNumber)
                 .build();
-        return doRequest(userRest.requestSmsCodeToResetPassword(body), BOOLEAN_MAPPER);
+        return client.doRequestForBoolean(userRest.requestSmsCodeToResetPassword(body));
     }
 
     @Override
@@ -115,7 +118,7 @@ public class UserApiImpl implements UserApi, RetrofitApi {
         UserRestBody body = UserRestBody.newBuilder()
                 .password(newPassword)
                 .build();
-        return doRequest(userRest.resetPassword(smsCode, body), BOOLEAN_MAPPER);
+        return client.doRequestForBoolean(userRest.resetPassword(smsCode, body));
     }
 
     @Override
@@ -123,7 +126,7 @@ public class UserApiImpl implements UserApi, RetrofitApi {
         LeanCloudCache cache = LeanCloudCache.getInstance();
         String token = cache.getToken();
         String uid = cache.getObjectId();
-        return doRequest(userRest.updateUser(token, uid, entity), BOOLEAN_MAPPER)
+        return client.doRequest(userRest.updateUser(token, uid, entity), BOOLEAN_MAPPER)
                 .map(new Func1<Boolean, User>() {
                     @Override
                     public User call(Boolean updated) {
@@ -133,18 +136,4 @@ public class UserApiImpl implements UserApi, RetrofitApi {
                 });
     }
 
-    @Override
-    public <T> RequestBody buildBody(T t) {
-        return RetrofitClient.getInstance().buildBody(t);
-    }
-
-    @Override
-    public <T, R> Observable<R> doRequest(Call<T> call, Func1<T, R> mapper) {
-        return RetrofitClient.getInstance().doRequest(call, mapper);
-    }
-
-    @Override
-    public <T> Observable<T> doRequest(Call<T> call) {
-        return RetrofitClient.getInstance().doRequest(call);
-    }
 }

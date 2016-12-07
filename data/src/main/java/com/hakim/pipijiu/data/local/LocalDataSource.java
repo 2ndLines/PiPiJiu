@@ -1,26 +1,23 @@
-package com.hakim.pipijiu.data.remote;
+package com.hakim.pipijiu.data.local;
 
 import android.support.annotation.NonNull;
 import android.util.ArrayMap;
 
 import com.hakim.pipijiu.data.IDataSource;
-import com.hakim.pipijiu.data.entities.Brand;
 
 import java.util.List;
 
 import rx.Observable;
 
 /**
- * OkLine(HangZhou) co., Ltd. <br/>
  * Author: Shi Haijun <br/>
- * Email : haijun@okline.cn <br/>
- * Date  : 2016/12/7 14:58 <br/>
+ * Email : hakim.shi@qq.com <br/>
+ * Date  : 2016/12/7 <br/>
  * Desc  :
  */
-public class BrandRemoteDataSource implements IDataSource<Brand> {
-
+public class LocalDataSource<T> implements IDataSource<T>{
     @Override
-    public Observable<String> insert(@NonNull Brand data) {
+    public Observable<String> insert(@NonNull T data) {
         return null;
     }
 
@@ -35,12 +32,12 @@ public class BrandRemoteDataSource implements IDataSource<Brand> {
     }
 
     @Override
-    public Observable<Brand> detail(@NonNull String objectId) {
+    public Observable<T> detail(@NonNull String objectId) {
         return null;
     }
 
     @Override
-    public Observable<List<Brand>> list(@NonNull String where) {
+    public Observable<List<T>> list(@NonNull String where) {
         return null;
     }
 }
