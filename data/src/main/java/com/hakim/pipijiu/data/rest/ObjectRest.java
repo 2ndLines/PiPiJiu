@@ -40,5 +40,4 @@ public interface ObjectRest<T> {
     @DELETE(PARAMETERS_CLASS)
     Call<UpdatedResult> deleteAll(@Path("className") String className, @Query("where") String where);
 
-
 }

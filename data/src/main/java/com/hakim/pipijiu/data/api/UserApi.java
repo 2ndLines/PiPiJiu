@@ -1,6 +1,6 @@
 package com.hakim.pipijiu.data.api;
 
-import com.hakim.pipijiu.data.entities.UserEntity;
+import com.hakim.pipijiu.data.entities.User;
 
 import rx.Observable;
 
@@ -20,7 +20,7 @@ public interface UserApi {
      * @param password    密码
      * @return
      */
-    Observable<UserEntity> login(String phoneNumber, String password);
+    Observable<User> login(String phoneNumber, String password);
 
     /**
      * 注册
@@ -29,7 +29,15 @@ public interface UserApi {
      * @param password    密码
      * @return
      */
-    Observable<UserEntity> signUp(String phoneNumber, String smsCode, String password);
+    Observable<Boolean> signup(String phoneNumber, String smsCode, String password);
+
+    /**
+     * 获取用户信息
+     *
+     * @param uid 用户id
+     * @return
+     */
+    Observable<User> getUser(String uid);
 
     /**
      * 请求验证码
@@ -71,6 +79,6 @@ public interface UserApi {
      * @param entity
      * @return
      */
-    Observable<UserEntity> updateUser(UserEntity entity);
+    Observable<User> updateUser(User entity);
 
 }

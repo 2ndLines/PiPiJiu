@@ -7,31 +7,47 @@ import com.google.gson.annotations.SerializedName;
  * Author: Shi Haijun <br/>
  * Email : haijun@okline.cn <br/>
  * Date  : 2016/11/29 15:20 <br/>
- * Desc  : 用户实体
+ * Desc  : 用户
  */
-public class UserEntity {
-    /**
-     * LeanCloud objectId
-     */
+public class User {
     @SerializedName("objectId")
     private String uid;
-
     @SerializedName("sessionToken")
     private String token;
+
     /**
      * 用户名
      */
     private String username;
 
-    private String password;
+    /**
+     * 昵称
+     */
+    private String nickname;
+
     /**
      * 手机号码
      */
+    @SerializedName("mobilePhone")
     private String phone;
     /**
      * 注册时间
      */
     private String createdAt;
+
+    /**
+     * 性别
+     */
+    private String sex;
+    /**
+     * 头像
+     */
+    private String avatar;
+
+    /**
+     * 评分
+     */
+    private int score;
 
     public String getUid() {
         return uid;
@@ -49,14 +65,6 @@ public class UserEntity {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -65,14 +73,4 @@ public class UserEntity {
         return createdAt;
     }
 
-    @Override
-    public String toString() {
-        return "UserEntity{" +
-                "uid='" + uid + '\'' +
-                ", token='" + token + '\'' +
-                ", username='" + username + '\'' +
-                ", phone='" + phone + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                '}';
-    }
 }

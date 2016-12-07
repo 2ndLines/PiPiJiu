@@ -1,6 +1,7 @@
 package com.hakim.pipijiu.data.api;
 
-import com.hakim.pipijiu.data.entities.UserEntity;
+import com.hakim.pipijiu.data.entities.User;
+import com.hakim.pipijiu.data.rest.UpdatedResult;
 import com.hakim.pipijiu.data.rest.UserRest;
 import com.hakim.pipijiu.data.rest.UserRestBody;
 import com.hakim.pipijiu.data.retrofit.LeanCloudCache;
@@ -36,41 +37,55 @@ public class UserApiImpl implements UserApi, RetrofitApi {
     }
 
     @Override
-    public Observable<UserEntity> login(String phoneNumber, String password) {
+    public Observable<User> login(String phoneNumber, String password) {
         return doRequest(userRest.login(phoneNumber, password))
-                .doOnNext(new Action1<UserEntity>() {
+                .doOnNext(new Action1<User>() {
                     @Override
-                    public void call(UserEntity entity) {
-                        cacheTokenAndUid(entity);
+                    public void call(User entity) {
+                        cacheTokenAndUid(entity.getToken(), entity.getUid());
                     }
                 });
     }
 
-    public Observable<UserEntity> createUser(String username, String password) {
+    public Observable<User> createUser(String username, String password) {
         UserRestBody body = UserRestBody.newBuilder()
                 .username(username)
                 .password(password)
                 .build();
 
-        Call<UserEntity> call = userRest.createUser(body);
+        Call<User> call = userRest.createUser(body);
         return doRequest(call);
     }
 
 
     @Override
-    public Observable<UserEntity> signUp(String phoneNumber, String smsCode, String password) {
+    public Observable<Boolean> signup(String phoneNumber, String smsCode, String password) {
         UserRestBody body = UserRestBody.newBuilder()
                 .mobilePhoneNumber(phoneNumber)
                 .smsCode(smsCode)
                 .password(password)
                 .build();
-        return doRequest(userRest.signUp(body));
+        return doRequest(userRest.signUp(body)).map(new Func1<UpdatedResult, Boolean>() {
+            @Override
+            public Boolean call(UpdatedResult result) {
+                if (result != null) {
+                    cacheTokenAndUid(result.getToken(), result.getUid());
+                }
+
+                return result != null;
+            }
+        });
     }
 
-    private void cacheTokenAndUid(UserEntity entity) {
+    @Override
+    public Observable<User> getUser(String uid) {
+        return doRequest(userRest.getUser(uid));
+    }
+
+    private void cacheTokenAndUid(String token, String uid) {
         LeanCloudCache cache = LeanCloudCache.getInstance();
-        cache.setToken(entity.getToken());
-        cache.setObjectId(entity.getUid());
+        cache.setToken(token);
+        cache.setObjectId(uid);
     }
 
     @Override
@@ -104,14 +119,14 @@ public class UserApiImpl implements UserApi, RetrofitApi {
     }
 
     @Override
-    public Observable<UserEntity> updateUser(UserEntity entity) {
+    public Observable<User> updateUser(User entity) {
         LeanCloudCache cache = LeanCloudCache.getInstance();
         String token = cache.getToken();
         String uid = cache.getObjectId();
         return doRequest(userRest.updateUser(token, uid, entity), BOOLEAN_MAPPER)
-                .map(new Func1<Boolean, UserEntity>() {
+                .map(new Func1<Boolean, User>() {
                     @Override
-                    public UserEntity call(Boolean updated) {
+                    public User call(Boolean updated) {
                         // TODO: 2016/12/2 update user cache
                         return null;
                     }

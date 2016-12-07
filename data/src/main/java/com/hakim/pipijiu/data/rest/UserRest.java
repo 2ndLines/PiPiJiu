@@ -1,6 +1,6 @@
 package com.hakim.pipijiu.data.rest;
 
-import com.hakim.pipijiu.data.entities.UserEntity;
+import com.hakim.pipijiu.data.entities.User;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -28,10 +28,22 @@ public interface UserRest {
      * @return 返回用户实体
      */
     @GET("login")
-    Call<UserEntity> login(@Query("mobilePhoneNumber") String username, @Query("password") String password);
+    Call<User> login(@Query("mobilePhoneNumber") String username, @Query("password") String password);
 
     @POST("users")
-    Call<UserEntity> createUser(@Body UserRestBody body);
+    Call<User> createUser(@Body UserRestBody body);
+
+    @GET("users/{uid}")
+    Call<User> getUser(@Path("uid") String uid);
+
+    /**
+     * 获取登录用户
+     *
+     * @param token
+     * @return
+     */
+    @GET("users/me")
+    Call<User> getMe(@Header("X-LC-Session") String token);
 
     /**
      * 用户注册。使用手机号码+密码+验证码的形式
@@ -40,7 +52,7 @@ public interface UserRest {
      * @return 返回用户实体
      */
     @POST("usersByMobilePhone")
-    Call<UserEntity> signUp(@Body UserRestBody body);
+    Call<UpdatedResult> signUp(@Body UserRestBody body);
 
     /**
      * 用户注册之验证手机号码
@@ -92,7 +104,7 @@ public interface UserRest {
     /**
      * 重置密码之验证验证码
      *
-     * @param smsCode     6位短信验证码
+     * @param smsCode         6位短信验证码
      * @param newPasswordBody
      * @return
      */
@@ -107,5 +119,5 @@ public interface UserRest {
      * @return 返回OKHttp响应数据
      */
     @PUT("users/{objectId}")
-    Call<ResponseBody> updateUser(@Header("X-LC-Session") String token, @Path("objectId") String objectId, @Body UserEntity body);
+    Call<ResponseBody> updateUser(@Header("X-LC-Session") String token, @Path("objectId") String objectId, @Body User body);
 }
