@@ -1,5 +1,7 @@
 package com.hakim.pipijiu.data.rest;
 
+import android.support.annotation.NonNull;
+
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -16,7 +18,7 @@ import retrofit2.http.Path;
  * Date  : 2016/12/3 17:41 <br/>
  * Desc  : 文件上传及删除操作
  */
-public interface FileRest {
+public interface FileUploadService {
 
     /**
      * RequestBody building example:
@@ -31,8 +33,8 @@ public interface FileRest {
      */
     @Headers("Content-Type: image/png")
     @POST("files/{fileName}")
-    Call<LeanCloudFile> upload(@Path("fileName") String fileName, @Body RequestBody body);
+    Call<LeanCloudFile> upload(@NonNull @Path("fileName") String fileName, @Body RequestBody body);
 
     @DELETE("files/{objectId}")
-    Call<ResponseBody> delete(@Path("objectId") String objectId);
+    Call<ResponseBody> delete(@NonNull @Path("objectId") String objectId);
 }

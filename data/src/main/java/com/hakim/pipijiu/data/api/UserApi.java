@@ -29,7 +29,7 @@ public interface UserApi {
      * @param password    密码
      * @return
      */
-    Observable<Boolean> signup(String phoneNumber, String smsCode, String password);
+    Observable<Boolean> signUp(String phoneNumber, String smsCode, String password);
 
     /**
      * 获取用户信息
@@ -38,6 +38,10 @@ public interface UserApi {
      * @return
      */
     Observable<User> getUser(String uid);
+
+    Observable<User> fetchMe();
+
+    Observable<User> refreshToken();
 
     /**
      * 请求验证码

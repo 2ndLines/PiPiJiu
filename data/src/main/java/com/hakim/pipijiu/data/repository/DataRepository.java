@@ -18,24 +18,25 @@ import rx.Observable;
 public class DataRepository<T> implements IDataSource<T> {
     private final IDataSource<T> remoteSource;
     private final IDataSource<T> localSource;
-    public DataRepository(IDataSource<T> remoteSource, IDataSource<T> localSource){
+
+    public DataRepository(IDataSource<T> remoteSource, IDataSource<T> localSource) {
         this.remoteSource = remoteSource;
         this.localSource = localSource;
     }
 
     @Override
     public Observable<String> insert(@NonNull T data) {
-        throw new UnsupportedOperationException("Unsupported method");
+        return null;
     }
 
     @Override
     public void delete(@NonNull String objectId) {
-        throw new UnsupportedOperationException("Unsupported method");
+
     }
 
     @Override
     public <K, V> Observable<Boolean> update(@NonNull ArrayMap<K, V> fields) {
-        throw new UnsupportedOperationException("Unsupported method");
+        return null;
     }
 
     @Override

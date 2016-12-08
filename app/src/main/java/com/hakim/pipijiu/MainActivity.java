@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.hakim.pipijiu.data.api.UserApiImpl;
+import com.hakim.pipijiu.data.api.impl.UserApiImpl;
 
 import rx.Subscriber;
 import rx.functions.Action1;
@@ -31,17 +31,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Timber.tag(TAG).d("Test LeanCloud");
-                /*userApi.createUser("retrofit3", "123456").subscribe(new Action1<UserEntity>() {
-                    @Override
-                    public void call(UserEntity userEntity) {
-                        Timber.tag(TAG).i(userEntity.toString());
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Timber.tag(TAG).e(throwable);
-                    }
-                });*/
+
 
                 userApi.requestSmsCode("18167158550","Test").subscribe(new Action1<Boolean>() {
                     @Override

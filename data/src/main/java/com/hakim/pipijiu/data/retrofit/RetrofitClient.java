@@ -1,7 +1,5 @@
 package com.hakim.pipijiu.data.retrofit;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.hakim.pipijiu.data.utils.GsonUtils;
 
 import java.io.IOException;
@@ -10,8 +8,6 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -26,37 +22,12 @@ import rx.schedulers.Schedulers;
  */
 public class RetrofitClient implements RetrofitApi {
 
-    private static final String BASE_URL = "https://api.leancloud.cn/1.1/";
-    private final Retrofit retrofit;
-
-    private static class HOLDER {
-        private static final RetrofitClient client = new RetrofitClient();
-    }
-
-    public static RetrofitClient getInstance() {
-        return HOLDER.client;
-    }
-
-    private RetrofitClient() {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:dd").create();
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(HttpClient.getInstance().getClient())
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-    }
-
-    public <T> T create(Class<T> clazz) {
-        return retrofit.create(clazz);
-    }
-
     @Override
     public <T> RequestBody buildBody(T t) {
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), GsonUtils.toJson(t));
     }
 
+    @Override
     public <T> Observable<Boolean> doRequestForBoolean(Call<T> call) {
         return doRequest(call, new Func1<T, Boolean>() {
             @Override

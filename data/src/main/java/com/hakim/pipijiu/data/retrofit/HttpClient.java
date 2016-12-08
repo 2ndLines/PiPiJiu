@@ -3,9 +3,12 @@ package com.hakim.pipijiu.data.retrofit;
 import java.io.IOException;
 
 import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 /**
@@ -16,7 +19,8 @@ import timber.log.Timber;
  * Desc  :
  */
 public class HttpClient {
-    private final okhttp3.OkHttpClient client;
+    private static final String BASE_URL = "https://api.leancloud.cn/1.1/";
+    private final Retrofit retrofit;
 
     private static class HOLDER {
         private static final HttpClient INSTANCE = new HttpClient();
@@ -27,12 +31,14 @@ public class HttpClient {
     }
 
     HttpClient() {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(String message) {
-                Timber.tag("OKHttp").d(message);
-            }
-        });
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(
+                new HttpLoggingInterceptor.Logger() {
+                    @Override
+                    public void log(String message) {
+                        Timber.tag("OKHttp").d(message);
+                    }
+                });
+
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         Interceptor headersInterceptor = new Interceptor() {
@@ -49,15 +55,20 @@ public class HttpClient {
             }
         };
 
-        client = new okhttp3.OkHttpClient.Builder()
+        OkHttpClient client = new okhttp3.OkHttpClient.Builder()
                 .addInterceptor(headersInterceptor)
                 .addInterceptor(loggingInterceptor)
                 .build();
+
+        this.retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
     }
 
-    public okhttp3.OkHttpClient getClient() {
-        return client;
+    public <T> T createService(Class<T> clazz) {
+        return this.retrofit.create(clazz);
     }
-
 
 }

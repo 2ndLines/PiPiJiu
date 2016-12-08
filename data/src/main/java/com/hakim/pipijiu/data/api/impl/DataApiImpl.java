@@ -1,13 +1,10 @@
-package com.hakim.pipijiu.data.api;
+package com.hakim.pipijiu.data.api.impl;
 
 
-import com.hakim.pipijiu.data.rest.DataRest;
-import com.hakim.pipijiu.data.rest.UpdatedResult;
-import com.hakim.pipijiu.data.retrofit.RetrofitClient;
+import com.hakim.pipijiu.data.api.DataApi;
 
 import java.util.List;
 
-import retrofit2.Call;
 import rx.Observable;
 
 /**
@@ -17,18 +14,11 @@ import rx.Observable;
  * Desc  :
  */
 public class DataApiImpl<T> implements DataApi<T> {
-    private final String className;
-    private final DataRest rest;
-    private RetrofitClient client;
-    public DataApiImpl(String className){
-        this.className = className;
-        this.client = RetrofitClient.getInstance();
-        this.rest = client.create(DataRest.class);
-    }
+
 
     @Override
     public Observable<Boolean> insert(T t) {
-        return client.doRequestForBoolean(rest.insert(className, t));
+        return null;
     }
 
     @Override

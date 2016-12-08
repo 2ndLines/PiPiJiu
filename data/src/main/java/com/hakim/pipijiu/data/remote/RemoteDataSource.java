@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.ArrayMap;
 
 import com.hakim.pipijiu.data.IDataSource;
-import com.hakim.pipijiu.data.api.DataApi;
-import com.hakim.pipijiu.data.api.DataApiImpl;
 
 import java.util.List;
 
@@ -19,9 +17,9 @@ import rx.Observable;
  */
 public class RemoteDataSource<T> implements IDataSource<T> {
 
-    private final DataApi<T> api;
+
     public RemoteDataSource(@NonNull String className){
-        api = new DataApiImpl<>(className);
+
     }
 
     @Override

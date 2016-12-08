@@ -5,21 +5,39 @@ package com.hakim.pipijiu.data.rest;
  * Author: Shi Haijun <br/>
  * Email : haijun@okline.cn <br/>
  * Date  : 2016/12/3 15:59 <br/>
- * Desc  :
+ * Desc  : 网络服务请求体
  */
-public class UserRestBody {
+public class ServiceBody {
+    /**
+     * 用户名
+     */
     private String username;
+    /**
+     * 密码
+     */
     private String password;
+    /**
+     * 手机号码
+     */
     private String mobilePhoneNumber;
+    /**
+     * 操作类型，如注册，
+     */
     private String op;
+    /**
+     * 验证码
+     */
     private String smsCode;
+    /**
+     * 验证码有效时间
+     */
     private String ttl;
 
-    private UserRestBody(){
+    private ServiceBody() {
         //Empty constructor
     }
 
-    private UserRestBody(Builder builder) {
+    private ServiceBody(Builder builder) {
         username = builder.username;
         password = builder.password;
         mobilePhoneNumber = builder.mobilePhoneNumber;
@@ -28,8 +46,8 @@ public class UserRestBody {
         ttl = builder.ttl;
     }
 
-    public static Builder newBuilder(){
-        return new UserRestBody.Builder();
+    public static Builder newBuilder() {
+        return new ServiceBody.Builder();
     }
 
     public static final class Builder {
@@ -40,7 +58,7 @@ public class UserRestBody {
         private String smsCode;
         private String ttl;
 
-        private Builder() {
+        public Builder() {
         }
 
         public Builder username(String val) {
@@ -73,8 +91,8 @@ public class UserRestBody {
             return this;
         }
 
-        public UserRestBody build() {
-            return new UserRestBody(this);
+        public ServiceBody build() {
+            return new ServiceBody(this);
         }
     }
 }

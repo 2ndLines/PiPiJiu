@@ -9,24 +9,42 @@ import com.google.gson.annotations.SerializedName;
  * Date  : 2016/12/3 11:22 <br/>
  * Desc  :
  */
-public class UpdatedResult {
+public class ServiceResult {
+    /**
+     * LeanCloud SessionToken
+     */
     @SerializedName("sessionToken")
     private String token;
 
+    /**
+     * LeanCloud objectId
+     */
     @SerializedName("objectId")
-    private String uid;
+    private String lid;
 
+    /**
+     * 创建时间
+     */
     private String createdAt;
+
+    /**
+     * 更新时间
+     */
+    private String updatedAt;
 
     public String getToken() {
         return token;
     }
 
-    public String getUid() {
-        return uid;
+    public String getLid() {
+        return lid;
     }
 
     public String getCreatedAt() {
         return createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 }

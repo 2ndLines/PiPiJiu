@@ -1,5 +1,7 @@
 package com.hakim.pipijiu.data.rest;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -18,7 +20,7 @@ import retrofit2.http.Query;
  * Date  : 2016/12/3 11:22 <br/>
  * Desc  :
  */
-public interface DataRest {
+public interface DataService {
     String PARAMETERS_CLASS = "classes/{className}";
     String PARAMETERS_OBJECT = "classes/{className}/{objectId}";
 
@@ -30,7 +32,7 @@ public interface DataRest {
      * @return
      */
     @POST(PARAMETERS_CLASS)
-    <T> Call<UpdatedResult> insert(@Path("className") String className, @Body T t);
+    <T> Call<ServiceResult> insert(@NonNull @Path("className") String className, @Body T t);
 
     /**
      * 获取对象详情
@@ -40,7 +42,7 @@ public interface DataRest {
      * @return
      */
     @GET(PARAMETERS_OBJECT)
-    <T> Call<T> detail(@Path("className") String className, @Path("objectId") String objectId);
+    <T> Call<T> detail(@NonNull @Path("className") String className, @NonNull @Path("objectId") String objectId);
 
     /**
      * 获取对象列表
@@ -52,7 +54,7 @@ public interface DataRest {
      * @return
      */
     @GET(PARAMETERS_CLASS)
-    <T> Call<List<T>> list(@Path("className") String className, @Query("where") String where, @Query("skip") int skip, @Query("limit") int limit);
+    <T> Call<List<T>> list(@NonNull @Path("className") String className, @Query("where") String where, @Query("skip") int skip, @Query("limit") int limit);
 
     /**
      * 更新对象
@@ -63,7 +65,7 @@ public interface DataRest {
      * @return
      */
     @PUT(PARAMETERS_OBJECT)
-    <T> Call<UpdatedResult> update(@Path("className") String className, @Path("objectId") String objectId, @Body T body);
+    <T> Call<ServiceResult> update(@NonNull @Path("className") String className, @NonNull @Path("objectId") String objectId, @Body T body);
 
     /**
      * 删除对象
@@ -73,7 +75,7 @@ public interface DataRest {
      * @return
      */
     @DELETE(PARAMETERS_OBJECT)
-    Call<UpdatedResult> delete(@Path("className") String className, @Path("objectId") String objectId);
+    Call<ServiceResult> delete(@NonNull @Path("className") String className, @NonNull @Path("objectId") String objectId);
 
     /**
      * 删除表中的符合条件所有对象
@@ -83,6 +85,6 @@ public interface DataRest {
      * @return
      */
     @DELETE(PARAMETERS_CLASS)
-    Call<UpdatedResult> deleteBulk(@Path("className") String className, @Query("where") String where);
+    Call<ServiceResult> deleteBulk(@NonNull @Path("className") String className, @NonNull @Query("where") String where);
 
 }
