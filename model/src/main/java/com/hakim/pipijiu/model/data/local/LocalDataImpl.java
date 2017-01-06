@@ -9,7 +9,17 @@ import android.content.ContentValues;
  * Desc  :
  */
 public abstract class LocalDataImpl<T> {
-    abstract String tableName();
 
-    abstract ContentValues asContentValue(T t);
+    /**
+     * 数据库名称
+     */
+    public abstract String tableName();
+
+    /**
+     * 将实体{@code t}转化为ContentValues对象
+     *
+     * @param t
+     * @return
+     */
+    public abstract ContentValues asContentValue(T t);
 }

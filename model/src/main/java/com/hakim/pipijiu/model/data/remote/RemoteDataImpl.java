@@ -7,5 +7,8 @@ package com.hakim.pipijiu.model.data.remote;
  * Desc  :
  */
 public abstract class RemoteDataImpl {
+    /**
+     * @return
+     */
     public abstract String bucketName();
 }
