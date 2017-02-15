@@ -2,7 +2,6 @@ package com.hakim.pipijiu.model.leancloud;
 
 import com.hakim.pipijiu.model.manager.UserManager;
 import com.hakim.pipijiu.model.entities.User;
-import com.hakim.pipijiu.model.retrofit.HttpClient;
 
 import rx.Observable;
 

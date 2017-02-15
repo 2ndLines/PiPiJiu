@@ -1,6 +1,4 @@
-package com.hakim.pipijiu.model.leancloud;
-
-import android.support.annotation.NonNull;
+package com.leancloud.service;
 
 import java.util.List;
 
@@ -33,7 +31,7 @@ public interface DataService {
      * @return
      */
     @POST(PARAMETERS_CLASS)
-    Call<ServiceResult> insert(@NonNull @Path("className") String className, @Body Object t);
+    Call<ServiceResult> insert(@Path("className") String className, @Body Object t);
 
     /**
      * 获取对象详情
@@ -43,7 +41,7 @@ public interface DataService {
      * @return
      */
     @GET(PARAMETERS_OBJECT)
-    Call<ResponseBody> detail(@NonNull @Path("className") String className, @NonNull @Path("objectId") String objectId);
+    Call<ResponseBody> detail(@Path("className") String className, @Path("objectId") String objectId);
 
     /**
      * 获取对象列表
@@ -55,7 +53,7 @@ public interface DataService {
      * @return
      */
     @GET(PARAMETERS_CLASS)
-    <T> Call<List<Object>> list(@NonNull @Path("className") String className, @Query("where") String where, @Query("skip") int skip, @Query("limit") int limit);
+    <T> Call<List<Object>> list(@Path("className") String className, @Query("where") String where, @Query("skip") int skip, @Query("limit") int limit);
 
     /**
      * 更新对象
@@ -66,7 +64,7 @@ public interface DataService {
      * @return
      */
     @PUT(PARAMETERS_OBJECT)
-    Call<ServiceResult> update(@NonNull @Path("className") String className, @NonNull @Path("objectId") String objectId, @Body Object body);
+    Call<ServiceResult> update(@Path("className") String className, @Path("objectId") String objectId, @Body Object body);
 
     /**
      * 删除对象
@@ -76,7 +74,7 @@ public interface DataService {
      * @return
      */
     @DELETE(PARAMETERS_OBJECT)
-    Call<ServiceResult> delete(@NonNull @Path("className") String className, @NonNull @Path("objectId") String objectId);
+    Call<ServiceResult> delete(@Path("className") String className, @Path("objectId") String objectId);
 
     /**
      * 删除表中符合条件的所有对象
@@ -86,6 +84,6 @@ public interface DataService {
      * @return
      */
     @DELETE(PARAMETERS_CLASS)
-    Call<ServiceResult> deleteBulk(@NonNull @Path("className") String className, @NonNull @Query("where") String where);
+    Call<ServiceResult> deleteBulk(@Path("className") String className, @Query("where") String where);
 
 }

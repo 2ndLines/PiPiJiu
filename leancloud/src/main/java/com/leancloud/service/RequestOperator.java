@@ -1,11 +1,11 @@
-package com.hakim.pipijiu.model.retrofit;
-
-import com.hakim.pipijiu.model.utils.GsonUtils;
+package com.leancloud.service;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import rx.Observable;
@@ -18,16 +18,22 @@ import rx.schedulers.Schedulers;
  * Author: Shi Haijun <br/>
  * Email : haijun@okline.cn <br/>
  * Date  : 2016/11/30 14:19 <br/>
- * Desc  :
+ * Desc  : 请求执行者
  */
-public class RetrofitClient implements RetrofitApi {
+public class RequestOperator {
+    private static RequestOperator INSTANCE;
 
-    @Override
+    public static RequestOperator getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new RequestOperator();
+        }
+        return INSTANCE;
+    }
+
     public <T> RequestBody buildBody(T t) {
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), GsonUtils.toJson(t));
     }
 
-    @Override
     public <T> Observable<Boolean> doRequestForBoolean(Call<T> call) {
         return doRequest(call, new Func1<T, Boolean>() {
             @Override
@@ -47,7 +53,6 @@ public class RetrofitClient implements RetrofitApi {
      * @param <R>    期望的结果类型
      * @return
      */
-    @Override
     public <T, R> Observable<R> doRequest(final Call<T> call, final Func1<T, R> mapper) {
         if (call == null) throw new NullPointerException("Call object must not be null");
         return Observable.create(new Observable.OnSubscribe<R>() {
@@ -81,21 +86,52 @@ public class RetrofitClient implements RetrofitApi {
         }).subscribeOn(Schedulers.io());
     }
 
-    @Override
-    public <T> Observable<T> doRequest(final Call<T> call) {
-        if (call == null) throw new NullPointerException("Call object must not be null");
+    public <T> Observable<T> request(final Call<ResponseBody> call, final Type typeOfT) {
         return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
             public void call(Subscriber<? super T> subscriber) {
                 if (!subscriber.isUnsubscribed()) {
+                    LeanCloudException exception = null;
                     try {
-                        Response<T> r = call.execute();
+                        Response<ResponseBody> response = call.execute();
+                        if (response.errorBody() != null) {
+                            LeanCloudError error = GsonUtils.fromJson(response.errorBody().string(), LeanCloudError.class);
+                            exception = new LeanCloudException(error.getCode(), error.getError());
+                        } else if (response.isSuccessful()) {
+                            T t = GsonUtils.fromJson(response.body().string(), typeOfT);
+                            System.out.println("Request result : " + t);
+                            subscriber.onNext(t);
+                            subscriber.onCompleted();
+                        } else {
+                            exception = new LeanCloudException(response.code(), response.message());
+                        }
+
+                    } catch (IOException e) {
+                        exception = new LeanCloudException(LeanCloudException.CODE_REQUEST_EXCEPTION, e.getMessage());
+                    }
+                    if (exception != null) {
+                        subscriber.onError(exception);
+                    }
+                }
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<ServiceResult> doRequest(final Call<ServiceResult> call) {
+        return Observable.create(new Observable.OnSubscribe<ServiceResult>() {
+            @Override
+            public void call(Subscriber<? super ServiceResult> subscriber) {
+                if (!subscriber.isUnsubscribed()) {
+                    try {
+                        Response<ServiceResult> r = call.execute();
                         if (r.errorBody() != null) {
                             String errStr = r.errorBody().string();
                             LeanCloudError error = GsonUtils.fromJson(errStr, LeanCloudError.class);
                             subscriber.onError(new LeanCloudException(error.getCode(), error.getError()));
                         } else if (r.isSuccessful()) {
-                            subscriber.onNext(r.body());
+                            ServiceResult result = r.body();
+                            System.out.println("Request Result : " + result);
+                            subscriber.onNext(result);
                             subscriber.onCompleted();
                         } else {
                             subscriber.onError(new LeanCloudException(r.code(), r.message()));

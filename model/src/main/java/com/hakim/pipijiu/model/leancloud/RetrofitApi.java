@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.model.retrofit;
+package com.hakim.pipijiu.model.leancloud;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;

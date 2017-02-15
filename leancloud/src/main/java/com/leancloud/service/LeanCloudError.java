@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.model.retrofit;
+package com.leancloud.service;
 
 /**
  * OkLine(HangZhou) co., Ltd. <br/>

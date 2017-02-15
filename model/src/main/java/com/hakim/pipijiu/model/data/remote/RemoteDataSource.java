@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.hakim.pipijiu.model.data.IDataSource;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import rx.Observable;
@@ -17,43 +18,43 @@ import rx.Observable;
  * Desc  :
  */
 public class RemoteDataSource<T> implements IDataSource<T> {
-    private final IDataSource<T> remoteDataSource;
+    private final IDataSource<T> dataSource;
     public RemoteDataSource(IDataSource<T> dataSource){
-        this.remoteDataSource = dataSource;
+        this.dataSource = dataSource;
     }
 
     @Override
     public Observable<Long> insert(@NonNull T data) {
-        return null;
+        return dataSource.insert(data);
     }
 
     @Override
     public Observable<Integer> bulkInsert(@NonNull List<T> list) {
-        return null;
+        return dataSource.bulkInsert(list);
     }
 
     @Override
     public Observable<Integer> delete(@NonNull String objectId) {
-        return null;
+        return dataSource.delete(objectId);
     }
 
     @Override
     public Observable<Integer> bulkDelete(@Nullable ContentValues where) {
-        return null;
+        return dataSource.bulkDelete(where);
     }
 
     @Override
     public Observable<Integer> update(@NonNull ContentValues where, @NonNull ContentValues newValues) {
-        return null;
+        return dataSource.update(where, newValues);
     }
 
     @Override
-    public Observable<T> detail(@NonNull String objectId) {
-        return null;
+    public Observable<T> detail(@NonNull String objectId, Type typeOfT) {
+        return dataSource.detail(objectId,typeOfT);
     }
 
     @Override
-    public Observable<List<T>> list(@NonNull ContentValues where, int skip, int limit) {
-        return null;
+    public Observable<List<T>> list(@NonNull ContentValues where, int skip, int limit, Type typeOfList) {
+        return dataSource.list(where, skip, limit, typeOfList);
     }
 }

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import rx.Observable;
@@ -67,7 +68,7 @@ public interface IDataSource<T> {
      * @param objectId 对象Id
      * @return 对象实体
      */
-    Observable<T> detail(@NonNull String objectId);
+    Observable<T> detail(@NonNull String objectId, Type typeOfT);
 
     /**
      * 查询数据
@@ -75,5 +76,5 @@ public interface IDataSource<T> {
      * @param where 查询条件
      * @return
      */
-    Observable<List<T>> list(@NonNull ContentValues where, int skip, int limit);
+    Observable<List<T>> list(@NonNull ContentValues where, int skip, int limit, Type typeOfList);
 }

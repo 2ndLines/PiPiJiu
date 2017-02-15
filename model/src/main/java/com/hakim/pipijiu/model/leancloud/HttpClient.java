@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.model.retrofit;
+package com.hakim.pipijiu.model.leancloud;
 
 import java.io.IOException;
 

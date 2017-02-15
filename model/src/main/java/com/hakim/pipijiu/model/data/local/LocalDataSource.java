@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.hakim.pipijiu.model.data.IDataSource;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -69,12 +70,12 @@ public class LocalDataSource<T> implements IDataSource<T> {
     }
 
     @Override
-    public Observable<T> detail(@NonNull String objectId) {
+    public Observable<T> detail(@NonNull String objectId, Type typeOfT) {
         return null;
     }
 
     @Override
-    public Observable<List<T>> list(@NonNull ContentValues where, int skip, int limit) {
+    public Observable<List<T>> list(@NonNull ContentValues where, int skip, int limit, Type typeOfList) {
         return null;
     }
 

@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.hakim.pipijiu.model.data.IDataSource;
-import com.hakim.pipijiu.model.data.remote.RemoteDataImpl;
-import com.hakim.pipijiu.model.retrofit.HttpClient;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Author: Shi Haijun <br/>
@@ -20,16 +20,23 @@ import rx.Observable;
  */
 public class LeanCloudRemoteDataSource<T> implements IDataSource<T> {
     private final DataService dataService;
-    private final RemoteDataImpl dataImpl;
+    private final RetrofitClient client;
+    private final String className;
 
-    public LeanCloudRemoteDataSource(RemoteDataImpl impl) {
-        dataService = HttpClient.getInstance().createService(DataService.class);
-        this.dataImpl = impl;
+    public LeanCloudRemoteDataSource(String className) {
+        this.dataService = HttpClient.getInstance().createService(DataService.class);
+        this.className = className;
+        client = RetrofitClient.getInstance();
     }
 
     @Override
     public Observable<Long> insert(@NonNull T data) {
-        return null;
+        return client.doRequest(dataService.insert(className, data)).map(new Func1<ServiceResult, Long>() {
+            @Override
+            public Long call(ServiceResult serviceResult) {
+                return (long) (serviceResult.getLid() != null ? 0 : -1);
+            }
+        });
     }
 
     @Override
@@ -39,7 +46,12 @@ public class LeanCloudRemoteDataSource<T> implements IDataSource<T> {
 
     @Override
     public Observable<Integer> delete(@NonNull String objectId) {
-        return null;
+        return client.doRequest(dataService.delete(className, objectId)).map(new Func1<ServiceResult, Integer>() {
+            @Override
+            public Integer call(ServiceResult serviceResult) {
+                return serviceResult != null ? 1 : 0;
+            }
+        });
     }
 
     @Override
@@ -53,12 +65,17 @@ public class LeanCloudRemoteDataSource<T> implements IDataSource<T> {
     }
 
     @Override
-    public Observable<T> detail(@NonNull String objectId) {
-        return null;
+    public Observable<T> detail(@NonNull String objectId, Type typeOfT) {
+        return client.request(dataService.detail(className, objectId), typeOfT).map(new Func1<Object, T>() {
+            @Override
+            public T call(Object o) {
+                return (T) o;
+            }
+        });
     }
 
     @Override
-    public Observable<List<T>> list(@NonNull ContentValues where, int skip, int limit) {
+    public Observable<List<T>> list(@NonNull ContentValues where, int skip, int limit, Type typeOfList) {
         return null;
     }
 }

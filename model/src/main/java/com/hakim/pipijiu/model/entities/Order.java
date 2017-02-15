@@ -1,5 +1,7 @@
 package com.hakim.pipijiu.model.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
  * Desc  : 修护订单
  */
 public class Order {
+    @SerializedName("objectId")
     private String id;
     /**
      * 订单编号
@@ -44,4 +47,21 @@ public class Order {
      */
     private String status;
 
+    public Order(String number){
+        this.number = number;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id='" + id + '\'' +
+                ", number='" + number + '\'' +
+                ", guestId='" + guestId + '\'' +
+                ", mchtId='" + mchtId + '\'' +
+                ", convey=" + convey +
+                ", repairs=" + repairs +
+                ", amount='" + amount + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

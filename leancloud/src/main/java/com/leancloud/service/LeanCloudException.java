@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.model.retrofit;
+package com.leancloud.service;
 
 /**
  * OkLine(HangZhou) co., Ltd. <br/>
@@ -8,6 +8,10 @@ package com.hakim.pipijiu.model.retrofit;
  * Desc  :
  */
 public class LeanCloudException extends RuntimeException {
+    /**
+     * LeanCloud请求错误
+     */
+    public static final  int CODE_REQUEST_EXCEPTION = 100;
     private int code;
 
     /**

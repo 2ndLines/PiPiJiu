@@ -1,4 +1,4 @@
-package com.hakim.pipijiu.model.leancloud;
+package com.leancloud.service;
 
 import com.google.gson.annotations.SerializedName;
 
